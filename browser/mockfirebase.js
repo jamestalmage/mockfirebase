@@ -1,4 +1,4 @@
-/** mockfirebase - v0.9.2
+/** mockfirebase - v0.10.0
 https://github.com/katowulf/mockfirebase
 * Copyright (c) 2014 Kato
 * License: MIT */
@@ -10054,6 +10054,10 @@ function MockFirebase (path, data, parent, name) {
   _.extend(this, Auth.prototype, new Auth());
 }
 
+MockFirebase.ServerValue = {
+  TIMESTAMP:{'.sv':'timestamp'}
+};
+
 MockFirebase.prototype.flush = function (delay) {
   this.queue.flush(delay);
   return this;
@@ -10344,6 +10348,34 @@ MockFirebase.prototype._childChanged = function (ref) {
   this._triggerAll(events);
 };
 
+MockFirebase.prototype.setTimestampGenerator = function(cb){
+  var ref = this;
+  while(ref.parentRef) ref = ref.parentRef;
+  ref.__generateTimestamp = cb;
+};
+
+MockFirebase.prototype.__generateTimestamp = function(){
+  return Date.now();
+};
+
+MockFirebase.prototype._generateTimestamp = function(){
+  var ref = this;
+  while(ref.parentRef) ref = ref.parentRef;
+  var ts,actual;
+  ts = actual = ref.__generateTimestamp(this);
+  if(_.isNumber(ts)){
+    return ts;
+  }
+  if(_.isDate(ts)){
+    return ts.getTime();
+  }
+  ts = parseInt(ts);
+  if(_.isNaN(ts)){
+    throw new Error('timestamp should be a Date or Number, got: ' + actual);
+  }
+  return ts;
+};
+
 MockFirebase.prototype._dataChanged = function (unparsedData) {
   var pri = utils.getMeta(unparsedData, 'priority', this.priority);
   var data = utils.cleanData(unparsedData);
@@ -10364,6 +10396,10 @@ MockFirebase.prototype._dataChanged = function (unparsedData) {
     if(!_.isObject(data)) {
       events.push(false);
       this.data = data;
+    }
+    else if(utils.isServerTimestamp(data)){
+      events.push(false);
+      this.data = this._generateTimestamp();
     }
     else {
       keysToChange.forEach(function(key) {
@@ -11473,6 +11509,15 @@ exports.priorityComparator = function priorityComparator (a, b) {
     }
   }
   return 0;
+};
+
+exports.isServerTimestamp = function(data){
+  var keys = Object.keys(data);
+  return (
+    keys.length == 1 &&
+    keys[0] == '.sv' &&
+    data['.sv'] == 'timestamp'
+  );
 };
 
 },{"./snapshot":22,"lodash":15}]},{},[1])(1)
