@@ -15,7 +15,7 @@ export default class FirebaseMap extends ValueMap {
     return toFirebase(toJSIn(this, keyPath))
   }
   toJS () {
-    return toFirebase(super.toJS())
+    return toFirebase(super.toJS()) // eslint-disable-line space-before-keywords
   }
   diff (newMap) {
     return immutableDiff(this.get(), newMap.get())

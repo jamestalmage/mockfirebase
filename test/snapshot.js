@@ -1,7 +1,7 @@
 'use strict'
 
 import test from 'tape'
-import {stub, spy} from 'sinon'
+import {spy} from 'sinon'
 import Snapshot from '../src/snapshot'
 import Firebase from '../'
 

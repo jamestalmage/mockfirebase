@@ -1,7 +1,6 @@
 'use strict'
 
 import Queue from 'flush-queue'
-import define from 'define-properties'
 import DataMap from './map'
 import PriorityMap from './priority'
 import Cache from './cache'

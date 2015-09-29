@@ -2,9 +2,7 @@
 
 import exportValue from 'firebase-export-value'
 import define from 'define-properties'
-import {join} from 'path-posix'
 import underscore from 'underscore-keys'
-import Map from './map'
 
 export default class Snapshot {
   constructor (ref, root) {

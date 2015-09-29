@@ -2,12 +2,11 @@
 
 import test from 'tape'
 import {spy} from 'sinon'
-import startsWith from 'core-js/fn/string/starts-with'
 import Firebase from '../'
 
 test('Firebase', (t) => {
   t.test('Constructor', (t) => {
-    t.throws(() => {return new Firebase()}, /url is required/)
+    t.throws(() => { return new Firebase() }, /url is required/)
     t.test('caching', (t) => {
       Firebase.cache.enable()
       const ref1 = new Firebase('mock://')
