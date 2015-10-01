@@ -102,6 +102,10 @@ MockFirebase.prototype.getData = function () {
   return _.cloneDeep(this.data);
 };
 
+MockFirebase.prototype.getSnapshot = function() {
+  return new Snapshot(this, this.getData(), this.priority);
+};
+
 MockFirebase.prototype.getKeys = function () {
   return this.sortedDataKeys.slice();
 };
