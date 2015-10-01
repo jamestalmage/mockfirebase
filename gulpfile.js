@@ -54,6 +54,13 @@ gulp.task('test', ['cover'], function () {
     .pipe(plugins.istanbul.writeReports());
 });
 
+gulp.task('debug', function () {
+  return gulp.src('test/unit/*.js')
+    .pipe(plugins.mocha({
+      grep: argv.grep
+    }));
+});
+
 gulp.task('karma', function () {
   return require('karma-as-promised').server.start({
     frameworks: ['browserify', 'mocha', 'sinon'],

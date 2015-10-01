@@ -414,6 +414,15 @@ describe('MockFirebase', function () {
       expect(spy.called).to.equal(true);
     });
 
+    it('should trigger value events', function () {
+      ref.on('value', spy);
+      ref.flush();
+      expect(spy.callCount).to.equal(1);
+      ref.setPriority(75);
+      ref.flush();
+      expect(spy.callCount).to.equal(2);
+    });
+
     it('can be called on the root', function () {
       ref.root().setPriority(1);
       ref.flush();

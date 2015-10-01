@@ -181,8 +181,11 @@ MockFirebase.prototype.update = function (changes, callback) {
 
 MockFirebase.prototype.setPriority = function (newPriority, callback) {
   var err = this._nextErr('setPriority');
+  var data = utils.mergePriority(this.getSnapshot().exportVal(), newPriority);
   this._defer('setPriority', _.toArray(arguments), function () {
-    this._priChanged(newPriority);
+    if (!err) {
+      this._dataChanged(data);
+    }
     if (callback) callback(err);
   });
 };
@@ -191,6 +194,19 @@ MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
   this.setPriority(pri);
   this.set(data, callback);
 };
+
+// TODO: I suspect the following is actually the correct approach, but it causes test failures.
+
+/*MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
+  var err = this._nextErr('setWithPriority');
+  data = utils.mergePriority(data, pri);
+  this._defer('setWithPriority', _.toArray(arguments), function () {
+    if (!err) {
+      this._dataChanged(data);
+    }
+    if (callback) callback(err);
+  });
+};*/
 
 MockFirebase.prototype.key = function () {
   return this.myName;

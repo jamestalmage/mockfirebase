@@ -20,9 +20,11 @@ exports.cleanData = function cleanData(data) {
     if(_.has(newData, '.priority')) {
       delete newData['.priority'];
     }
-//      _.each(newData, function(v,k) {
-//        newData[k] = cleanData(v);
-//      });
+    _.each(newData, function(v, k) {
+      if (v === null) {
+        delete newData[k];
+      }
+    });
     if(_.isEmpty(newData)) { newData = null; }
   }
   return newData;
@@ -36,6 +38,25 @@ exports.getMeta = function getMeta (data, key, defaultVal) {
     delete data[metaKey];
   }
   return val;
+};
+
+exports.mergePriority = function mergePriority(data, priority) {
+  data = _.clone(data);
+  if(_.isObject(data)) {
+    data['.priority'] = priority;
+  } else {
+    data = {
+      '.value': data,
+      '.priority': priority
+    };
+  }
+  if (priority === null) {
+    if(_.has(data, '.value')) {
+      return data['.value'];
+    }
+    delete data['.priority'];
+  }
+  return data;
 };
 
 exports.assertKey = function assertKey (method, key, argNum) {
