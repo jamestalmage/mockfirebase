@@ -368,11 +368,7 @@ MockFirebase.prototype._childChanged = function (ref) {
 
 MockFirebase.prototype._dataChanged = function (unparsedData) {
   var pri = utils.getMeta(unparsedData, 'priority', this.priority);
-  var data = utils.cleanData(unparsedData);
-
-  if (utils.isServerTimestamp(data)) {
-    data = getServerTime();
-  }
+  var data = utils.processData(unparsedData, getServerTime);
 
   if( pri !== this.priority ) {
     this._priChanged(pri);
@@ -507,7 +503,7 @@ MockFirebase.prototype._addChild = function (key, data, events) {
     this.data = {};
   }
   this._addKey(key);
-  this.data[key] = utils.cleanData(data);
+  this.data[key] = utils.processData(data, getServerTime);
   var child = this.child(key);
   child._dataChanged(data);
   if (events) events.push(['child_added', child.getData(), child.priority, key]);
@@ -529,7 +525,7 @@ MockFirebase.prototype._removeChild = function (key, events) {
 };
 
 MockFirebase.prototype._updateChild = function (key, data, events) {
-  var cdata = utils.cleanData(data);
+  var cdata = utils.processData(data, getServerTime);
   if(_.isObject(this.data) && _.has(this.data,key) && !_.isEqual(this.data[key], cdata)) {
     this.data[key] = cdata;
     var c = this.child(key);

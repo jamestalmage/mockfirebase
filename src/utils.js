@@ -11,21 +11,36 @@ exports.mergePaths = function mergePaths (base, add) {
   return base.replace(/\/$/, '')+'/'+add.replace(/^\//, '');
 };
 
-exports.cleanData = function cleanData(data) {
+exports.processData = function processData(data, getServerTime) {
   var newData = _.clone(data);
   if(_.isObject(newData)) {
-    if(_.has(newData, '.value')) {
-      newData = _.clone(newData['.value']);
-    }
-    if(_.has(newData, '.priority')) {
-      delete newData['.priority'];
-    }
     _.each(newData, function(v, k) {
+      v = processData(v, getServerTime);
       if (v === null) {
         delete newData[k];
+      } else {
+        newData[k] = v;
       }
     });
-    if(_.isEmpty(newData)) { newData = null; }
+
+    var hasData = false;
+
+    _.each(newData, function(v, k) {
+      hasData = hasData || !(/^\./.test(k));
+    });
+
+    if (!hasData) {
+      if (isServerTimestamp(newData)) {
+        return getServerTime();
+      }
+      if (_.has(newData, '.priority')) {
+        if (!_.has(newData, '.value')) {
+          return null;
+        }
+      } else {
+        return _.has(newData, '.value') ? newData['.value'] : null;
+      }
+    }
   }
   return newData;
 };
@@ -91,6 +106,8 @@ exports.priorityComparator = function priorityComparator (a, b) {
   return 0;
 };
 
-exports.isServerTimestamp = function isServerTimestamp (data) {
+exports.isServerTimestamp = isServerTimestamp;
+
+function isServerTimestamp (data) {
   return _.isObject(data) && data['.sv'] === 'timestamp';
-};
+}
