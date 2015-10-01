@@ -190,14 +190,14 @@ MockFirebase.prototype.setPriority = function (newPriority, callback) {
   });
 };
 
-MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
+/*MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
   this.setPriority(pri);
   this.set(data, callback);
-};
+};*/
 
 // TODO: I suspect the following is actually the correct approach, but it causes test failures.
 
-/*MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
+MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
   var err = this._nextErr('setWithPriority');
   data = utils.mergePriority(data, pri);
   this._defer('setWithPriority', _.toArray(arguments), function () {
@@ -206,7 +206,7 @@ MockFirebase.prototype.setWithPriority = function (data, pri, callback) {
     }
     if (callback) callback(err);
   });
-};*/
+};
 
 MockFirebase.prototype.key = function () {
   return this.myName;
