@@ -373,8 +373,11 @@ MockFirebase.prototype._dataChanged = function (unparsedData) {
   if( pri !== this.priority ) {
     this._priChanged(pri);
   }
-  if( !_.isEqual(data, this.data) ) {
-    var oldKeys = _.keys(this.data).sort();
+
+  var thisData = this.getSnapshot().exportVal();
+
+  if( !_.isEqual(data, thisData) ) {
+    var oldKeys = _.keys(thisData).sort();
     var newKeys = _.keys(data).sort();
     var keysToRemove = _.difference(oldKeys, newKeys);
     var keysToChange = _.difference(newKeys, keysToRemove);

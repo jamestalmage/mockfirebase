@@ -45,6 +45,26 @@ exports.processData = function processData(data, getServerTime) {
   return newData;
 };
 
+/*
+exports.cleanData = function cleanData(data) {
+  data = _.clone(data);
+  if(_.isObject(data)) {
+    if (_.has(data, '.value')) {
+      return cleanData(data['.value']);
+    }
+    _.each(data, function (v, k) {
+      v = cleanData(v);
+      if (v === null || /^\./.test(k)) {
+        delete data[k];
+      }
+    });
+    if (_.isEmpty(data)) {
+      return null;
+    }
+  }
+  return data;
+};*/
+
 exports.getMeta = function getMeta (data, key, defaultVal) {
   var val = defaultVal;
   var metaKey = '.' + key;
